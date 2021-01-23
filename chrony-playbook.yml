@@ -1,0 +1,18 @@
+---
+- hosts: patching[0]
+  become: yes
+  gather_facts: false
+  ignore_errors: true
+  ignore_unreachable: true
+
+  tasks:
+  - name: Ensure chrony (for time synchronization) is installed
+    apt:
+      name: chrony
+      state: present
+
+  - name: Ensure chrony is running
+    service:
+      name: chrony
+      state: started
+      enabled: yes

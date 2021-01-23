@@ -1,0 +1,35 @@
+---
+version: '3'
+
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.18.0.0/24
+          gateway: 172.18.0.1
+services:
+  ansible_tower:
+    build: ./
+    image: ansible_base
+    container_name: control_node
+    hostname: control_tower
+    networks:
+      static-network:
+        ipv4_address: 172.18.0.2
+    user: ansible
+    privileged: true
+    working_dir: /home/ansible/shared
+    volumes:
+      - .:/home/ansible/shared
+    tty: true
+  ansible_node:
+    build: ./node
+    depends_on:
+      - ansible_tower
+    hostname: worker_node
+    ports:
+      - 22
+    tty: true
+    restart: unless-stopped
+    networks:
+      static-network:
