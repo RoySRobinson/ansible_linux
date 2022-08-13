@@ -1,0 +1,28 @@
+---
+- hosts: patching[0]
+  become: yes
+  gather_facts: false
+  ignore_errors: true
+  ignore_unreachable: true
+
+  tasks:
+  - name: Ensure that python3-apt and python3-pycurl packages are installed
+    apt:
+      state: present
+      name: 
+        - python3-apt
+        - python3-pycurl
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Check whether a package called python3-pycurl is installed
+    ansible.builtin.debug:
+      msg: "{{ ansible_facts.packages['python3-pycurl'] | length }} versions of python3-pycurl is installed!"
+    when: "'python3-pycurl' in ansible_facts.packages"
+
+  - name: Check whether a package called python3-apt is installed
+    ansible.builtin.debug:
+      msg: "{{ ansible_facts.packages['python3-apt'] | length }} versions of python3-apt is installed!"
+    when: "'python3-apt' in ansible_facts.packages"
