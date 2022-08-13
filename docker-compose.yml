@@ -9,8 +9,7 @@ networks:
           gateway: 172.18.0.1
 services:
   ansible_tower:
-    build: ./
-    image: ansible_base
+    image: roysrobinson/ansible_base
     container_name: control_node
     hostname: control_tower
     networks:
@@ -23,7 +22,7 @@ services:
       - .:/home/ansible/shared
     tty: true
   ansible_node:
-    build: ./node
+    image: roysrobinson/ansible_node
     depends_on:
       - ansible_tower
     hostname: worker_node
